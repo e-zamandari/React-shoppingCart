@@ -1,6 +1,6 @@
-import React, {useContext} from 'react';
+import React, {useContext , useEffect, useState} from 'react';
 import { Link , useParams } from 'react-router-dom';
-
+import { getSingleProduct } from '../services/api';
 // Context
 import { ProductsContext } from '../context/ProductContextProvider';
 
@@ -8,10 +8,17 @@ import { ProductsContext } from '../context/ProductContextProvider';
 import styles from "./ProductDetails.module.css";
 
 const ProductDetails = (props) => {
-    const params = useParams()
-    const id = params.id
+    const params = useParams();
     const data = useContext(ProductsContext);
-    const product = data[id - 1];
+    const [product , setProducts] = useState(data)
+    useEffect(()=>{
+        const id = params.id
+        const fetchAPI = async ()=>{
+            setProducts(await(getSingleProduct(id)))
+        }
+        
+        fetchAPI();
+    } , [params.id])
     const {image, title, description, price, category} = product;
 
     return (
